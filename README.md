@@ -1,4 +1,6 @@
+================================================
 UPDATE LOG: 
+================================================
 - 26 Feb 2014 by Ziquan
 	Add constraint, exploration strategy into output file name
 - 24 Feb 2014 by Ziquan
