@@ -16,20 +16,20 @@ XML CONFIG FILE
 ================================================
 
 - the root element is &lt;simulation&gt;.
--- &lt;simulation&gt; contains 1 or more &lt;case&gt;
----- &lt;case&gt; contains 1 &lt;runs&gt;, 1 &lt;inf&gt;, 1 &lt;bias&gt;, 1 &lt;delta&gt;, 0 or more &lt;tau&gt; and 0 or more &lt;agent&gt;
--------- &lt;runs&gt; contains an integer, which indicates the number of runs of the case.
--------- &lt;inf&gt; contains a string, which MUST BE an ABSOLUTE path to the influence matrix txt file OR a RELATIVE path to the jar files.
--------- &lt;bias&gt; and &lt;delta&gt; contain values between 0 and 1, which indicate the amount of initial uncertainty and the among of changes after shocks respectively.
--------- &lt;tau&gt; contains an integer, which indicates the time to have a shock. Multiple shocks need to have multiple &lt;tau&gt; elements.
--------- &lt;agent&gt; has a type to be defined. E.g., &lt;agent type="foo"&gt;. &lt;agent&gt; must has a UNIQUE type within one &lt;case&gt;, however, &lt;agent&gt;s in different &lt;case&gt;s can have the same type.
--------- &lt;agent&gt; contains 1 &lt;num&gt;, 1 &lt;power&gt; and 1 &lt;plan&gt;.
----------------- &lt;num&gt; contains an integer, which indicates the total number of that type of agents with within that case
----------------- &lt;power&gt; contains an integer, which indicates the processing power of that type of agent
----------------- &lt;plan&gt; contains the agent's implementation plan, E.g., (0,1)(2,3) when N=4, (0,1,3)(2,5,4) when N=6
----------------- &lt;constraint&gt; contains values in (0, 1], which indicates the amount of constraint resource. E.g., 1 for no resource constraint and 0.5 for half resource constraint.
----------------- &lt;exhaustive&gt; contains ‘true’ or ‘false’, which indicates the agent's exploration strategy. ’true’ for exhaustive greedy exploration; ‘false’ for random exploration.
----------------- &lt;refactoring&gt; is removed (did contain 'true' or 'false', which indicates the scope of refactoring process. 'true' for refactoring all implemented elements including the elements in the current iteration; 'false' for refactoring all implemented elements excluding the elements in the current iteration.)
+	- &lt;simulation&gt; contains 1 or more &lt;case&gt;
+		- &lt;case&gt; contains 1 &lt;runs&gt;, 1 &lt;inf&gt;, 1 &lt;bias&gt;, 1 &lt;delta&gt;, 0 or more &lt;tau&gt; and 0 or more &lt;agent&gt;
+			- &lt;runs&gt; contains an integer, which indicates the number of runs of the case.
+			- &lt;inf&gt; contains a string, which MUST BE an ABSOLUTE path to the influence matrix txt file OR a RELATIVE path to the jar files.
+			- &lt;bias&gt; and &lt;delta&gt; contain values between 0 and 1, which indicate the amount of initial uncertainty and the among of changes after shocks respectively.
+			- &lt;tau&gt; contains an integer, which indicates the time to have a shock. Multiple shocks need to have multiple &lt;tau&gt; elements.
+			- &lt;agent&gt; has a type to be defined. E.g., &lt;agent type="foo"&gt;. &lt;agent&gt; must has a UNIQUE type within one &lt;case&gt;, however, &lt;agent&gt;s in different &lt;case&gt;s can have the same type.
+			- &lt;agent&gt; contains 1 &lt;num&gt;, 1 &lt;power&gt; and 1 &lt;plan&gt;.
+				- &lt;num&gt; contains an integer, which indicates the total number of that type of agents with within that case
+				- &lt;power&gt; contains an integer, which indicates the processing power of that type of agent
+				- &lt;plan&gt; contains the agent's implementation plan, E.g., (0,1)(2,3) when N=4, (0,1,3)(2,5,4) when N=6
+				- &lt;constraint&gt; contains values in (0, 1], which indicates the amount of constraint resource. E.g., 1 for no resource constraint and 0.5 for half resource constraint.
+				- &lt;exhaustive&gt; contains ‘true’ or ‘false’, which indicates the agent's exploration strategy. ’true’ for exhaustive greedy exploration; ‘false’ for random exploration.
+				- &lt;refactoring&gt; is removed (did contain 'true' or 'false', which indicates the scope of refactoring process. 'true' for refactoring all implemented elements including the elements in the current iteration; 'false' for refactoring all implemented elements excluding the elements in the current iteration.)
 
 ================================================
 NK_run
