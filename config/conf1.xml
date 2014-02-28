@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<simulation>
+	<case>
+		<runs>200</runs>
+		<inf>./inf/n4k3.txt</inf>
+		<bias> 0.5</bias>
+		<delta> 0.8</delta>
+		<tau>50</tau>
+		<agent type="foo">
+			<num>100</num>
+			<power>1</power>
+			<plan>(0,1)(2,3)</plan>
+			<constraint>1</constraint>
+			<exhaustive>true</exhaustive>
+		</agent>
+		<agent type="bar">
+			<num>100</num>
+			<power>1</power>
+			<plan>(0,1,2,3)</plan>
+			<constraint>0.5</constraint>
+			<exhaustive>true</exhaustive>
+		</agent>
+		
+	</case>
+	<case>
+		<runs>200</runs>
+		<inf>./inf/n16k15.txt</inf>
+		<bias>0.5</bias>
+		<delta>0.8</delta>
+		<tau>50</tau>
+		<tau>300</tau>
+		<agent type="foo">
+			<num>100</num>
+			<power>1</power>
+			<plan>(0,1)(2,3)(4,5)(6,7)(8,9)(10,11)(12,13)(14,15)</plan>
+			<constraint>1</constraint>
+			<exhaustive>true</exhaustive>
+		</agent>
+		<agent type="bar">
+			<num>100</num>
+			<power>1</power>
+			<plan>(0,1,2,3)(4,5,6,7)(8,9,10,11)(12,13,14,15)</plan>
+			<constraint>0.5</constraint>
+			<exhaustive>true</exhaustive>
+		</agent>
+	</case>
+</simulation>

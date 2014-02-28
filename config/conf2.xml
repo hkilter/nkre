@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<simulation>
+	<case>
+		<runs> 200 </runs>
+		<inf>./inf/n4k3.txt</inf>
+		<bias> 0.5</bias>
+		<delta> 0.8</delta>
+		<tau>50</tau>
+		<agent type="foo">
+			<num> 100 </num>
+			<power>1 </power>
+			<plan> (0,1)(2,3)(0,1,2)(1,2,3) </plan>
+			<constraint>0.5</constraint>
+			<exhaustive>true</exhaustive>
+		</agent>
+		<agent type="bar">
+			<num> 100 </num>
+			<power> 1 </power>
+			<plan> (0,1,2,3) </plan>
+			<constraint>0.5</constraint>
+			<exhaustive>false</exhaustive>
+		</agent>
+	</case>
+</simulation>
