@@ -113,18 +113,32 @@ public class Simulator {
 					OutputWriter.writeLine(this.constructOutputFileLine());
 					this.myCurrentTime++;
 					// choose exploration strategy accordingly
-					if (this.myCurrentAgent.IsExhaustive()) {
-						// exhaustive explore
-						this.exhaustiveExplore(
-								this.myCurrentAgent.getImplementedElements(),
-								this.myCurrentAgent.getCurrentElements(),
-								this.myCurrentAgent.getUnimplementedElements());
+					if (this.myCurrentAgent.isAveraging()) {
+						if (this.myCurrentAgent.isExhaustive()) {
+							// exhaustive explore
+							this.exhaustiveExploreAveraging(this.myCurrentAgent
+									.getImplementedElements(),
+									this.myCurrentAgent.getCurrentElements(),
+									this.myCurrentAgent
+											.getUnimplementedElements());
+						} else {
+							// random explore
+							this.randomExploreAveraging(this.myCurrentAgent
+									.getImplementedElements(),
+									this.myCurrentAgent.getCurrentElements(),
+									this.myCurrentAgent
+											.getUnimplementedElements());
+						}
 					} else {
-						// random explore
-						this.randomExplore2(
-								this.myCurrentAgent.getImplementedElements(),
-								this.myCurrentAgent.getCurrentElements(),
-								this.myCurrentAgent.getUnimplementedElements());
+						if (this.myCurrentAgent.isExhaustive()) {
+							// exhaustive explore
+							this.exhaustiveExploreNonAveraging(this.myCurrentAgent
+									.getCurrentElements());
+						} else {
+							// random explore
+							this.randomExploreNonAveraging(this.myCurrentAgent
+									.getCurrentElements());
+						}
 					}
 					// explore on current elements
 					/*
@@ -174,64 +188,12 @@ public class Simulator {
 				+ "c"
 				+ ("" + this.myCurrentAgent.getConstraint())
 				+ "_"
-				+ (this.myCurrentAgent.IsExhaustive() ? "exhaustive" : "random")
+				+ (this.myCurrentAgent.isAveraging() ? "averaging"
+						: "nonAveraging")
+				+ "_"
+				+ (this.myCurrentAgent.isExhaustive() ? "exhaustive" : "random")
 				+ "_" + this.myCurrentAgent.getType() + ".txt";
 	}
-
-	/**
-	 * An exploration step is to randomly select an unvisited neighbouring
-	 * configuration/location. If the fitness value of the new
-	 * configuration/location is better than the current, the agent updates its
-	 * configuration/location to the new one. This exploration step repeats
-	 * until there is no more unvisited neighbouring configurations/locations.
-	 * This method records each exploration step into a file.
-	 * 
-	 * @param elements
-	 *            a set of element indices, which indicates the positions of the
-	 *            changeable elements
-	 */
-	// private void randomExplore(HashSet<Integer> elements) {
-	// // create visited set
-	// HashSet<Integer> visitedLocIds = new HashSet<Integer>();
-	// // put agent's current location into the visited set
-	// visitedLocIds.add(this.myCurrentAgent.getLocId());
-	// // get neighbour set of the agent's current location
-	// Landscape ldscp =
-	// this.myLandscapeTable[this.myCurrentShock][this.myCurrentAgent
-	// .getImplementedElements().size()];
-	// HashSet<Integer> currentNeighbours = ldscp.getNeighboursInclusive(
-	// this.myCurrentAgent.getLocId(), elements,
-	// this.myCurrentAgent.getProcessingPower());
-	// // from the neighbour set, remove all the visited locations, to end up
-	// // with unvisited neighour set
-	// currentNeighbours.removeAll(visitedLocIds);
-	//
-	// while (!currentNeighbours.isEmpty()) {
-	// // pick one candidate randomly
-	// int candidateNeighbour = -1;
-	// int candidateIdx = RandomGen.randomGen.nextInt(currentNeighbours
-	// .size());
-	// Iterator<Integer> itr = currentNeighbours.iterator();
-	// for (int i = 0; i <= candidateIdx; i++) {
-	// candidateNeighbour = itr.next();
-	// }
-	// // put the candidate in to visited set
-	// visitedLocIds.add(candidateNeighbour);
-	// // compare and pick the better one
-	// if (ldscp.getScoreOfLocId(candidateNeighbour) >= ldscp
-	// .getScoreOfLocId(this.myCurrentAgent.getLocId())) {
-	// this.myCurrentAgent.updateLocId(candidateNeighbour);
-	// currentNeighbours = ldscp.getNeighboursInclusive(
-	// this.myCurrentAgent.getLocId(), elements,
-	// this.myCurrentAgent.getProcessingPower());
-	// currentNeighbours.removeAll(visitedLocIds);
-	// } else {
-	// currentNeighbours.remove(candidateNeighbour);
-	// }
-	// OutputWriter.writeLine(this.constructOutputFileLine());
-	// this.myCurrentTime++;
-	// }
-	// }
 
 	/**
 	 * An exploration step is to randomly select an unvisited neighbouring
@@ -251,7 +213,7 @@ public class Simulator {
 	 *            a set of element indices, which indicates the positions of the
 	 *            unimplemented elements
 	 */
-	private void randomExplore2(HashSet<Integer> implementedElements,
+	private void randomExploreAveraging(HashSet<Integer> implementedElements,
 			HashSet<Integer> implementingElements,
 			HashSet<Integer> unimplementedElements) {
 		// get the set of implemented elements including the elements in the
@@ -260,13 +222,13 @@ public class Simulator {
 		// get the set of unimplemented elements excluding the current elements
 		// in the current iteration, for average
 		unimplementedElements.removeAll(implementingElements);
-		// get current landscape
-		Landscape ldscp = this.myLandscapeTable[this.myCurrentShock][this.myCurrentAgent
-				.getImplementedElements().size()];
 		// create visited set
 		HashSet<Integer> visitedLocIds = new HashSet<Integer>();
 		// put agent's current location into the visited set
 		visitedLocIds.add(this.myCurrentAgent.getLocId());
+		// get current landscape
+		Landscape ldscp = this.myLandscapeTable[this.myCurrentShock][this.myCurrentAgent
+				.getImplementedElements().size()];
 		// compute averaging score for agent's current location
 		HashSet<Integer> unimplementedNeighbours = ldscp
 				.getNeighboursInclusive(this.myCurrentAgent.getLocId(),
@@ -326,6 +288,60 @@ public class Simulator {
 	}
 
 	/**
+	 * An exploration step is to randomly select an unvisited neighbouring
+	 * configuration/location. If the fitness value of the new
+	 * configuration/location is better than the current, the agent updates its
+	 * configuration/location to the new one. This exploration step repeats
+	 * until there is no more unvisited neighbouring configurations/locations.
+	 * This method records each exploration step into a file.
+	 * 
+	 * @param implementingElements
+	 *            a set of element indices, which indicates the positions of the
+	 *            changeable elements
+	 */
+	private void randomExploreNonAveraging(HashSet<Integer> implementingElements) {
+		// create visited set
+		HashSet<Integer> visitedLocIds = new HashSet<Integer>();
+		// put agent's current location into the visited set
+		visitedLocIds.add(this.myCurrentAgent.getLocId());
+		// get neighbour set of the agent's current location
+		Landscape ldscp = this.myLandscapeTable[this.myCurrentShock][this.myCurrentAgent
+				.getImplementedElements().size()];
+		HashSet<Integer> implementingNeighbours = ldscp.getNeighboursInclusive(
+				this.myCurrentAgent.getLocId(), implementingElements,
+				this.myCurrentAgent.getProcessingPower());
+		// from the neighbour set, remove all the visited locations, to end up
+		// with unvisited neighour set
+		implementingNeighbours.removeAll(visitedLocIds);
+
+		while (!implementingNeighbours.isEmpty()) {
+			// pick one candidate randomly
+			int candidateNeighbour = -1;
+			int candidateIdx = RandomGen.randomGen
+					.nextInt(implementingNeighbours.size());
+			Iterator<Integer> itr = implementingNeighbours.iterator();
+			for (int i = 0; i <= candidateIdx; i++) {
+				candidateNeighbour = itr.next();
+			}
+			// put the candidate in to visited set
+			visitedLocIds.add(candidateNeighbour);
+			// compare and pick the better one
+			if (ldscp.getScoreOfLocId(candidateNeighbour) >= ldscp
+					.getScoreOfLocId(this.myCurrentAgent.getLocId())) {
+				this.myCurrentAgent.updateLocId(candidateNeighbour);
+				implementingNeighbours = ldscp.getNeighboursInclusive(
+						this.myCurrentAgent.getLocId(), implementingElements,
+						this.myCurrentAgent.getProcessingPower());
+				implementingNeighbours.removeAll(visitedLocIds);
+			} else {
+				implementingNeighbours.remove(candidateNeighbour);
+			}
+			OutputWriter.writeLine(this.constructOutputFileLine());
+			this.myCurrentTime++;
+		}
+	}
+
+	/**
 	 * An exploration step is to greedily select the best unvisited neighbouring
 	 * configuration/location. Then the agent updates its configuration/location
 	 * to the new one. This exploration step repeats until the current
@@ -342,7 +358,8 @@ public class Simulator {
 	 *            a set of element indices, which indicates the positions of the
 	 *            unimplemented elements
 	 */
-	private void exhaustiveExplore(HashSet<Integer> implementedElements,
+	private void exhaustiveExploreAveraging(
+			HashSet<Integer> implementedElements,
 			HashSet<Integer> implementingElements,
 			HashSet<Integer> unimplementedElements) {
 		// get the set of implemented elements including the elements in the
@@ -351,13 +368,13 @@ public class Simulator {
 		// get the set of unimplemented elements excluding the current elements
 		// in the current iteration, for average
 		unimplementedElements.removeAll(implementingElements);
-		// get current landscape
-		Landscape ldscp = this.myLandscapeTable[this.myCurrentShock][this.myCurrentAgent
-				.getImplementedElements().size()];
 		// create visited set
 		HashSet<Integer> visitedLocIds = new HashSet<Integer>();
 		// put agent's current location into the visited set
 		visitedLocIds.add(this.myCurrentAgent.getLocId());
+		// get current landscape
+		Landscape ldscp = this.myLandscapeTable[this.myCurrentShock][this.myCurrentAgent
+				.getImplementedElements().size()];
 		// compute averaging score for agent's current location
 		HashSet<Integer> unimplementedNeighbours = ldscp
 				.getNeighboursInclusive(this.myCurrentAgent.getLocId(),
@@ -421,6 +438,77 @@ public class Simulator {
 				if (candidateAverageScore >= currentAverageScore) {
 					this.myCurrentAgent.updateLocId(candidateNeighbour);
 					currentAverageScore = candidateAverageScore;
+					foundBetter = true;
+				}
+			}
+		} while (foundBetter);
+	}
+
+	/**
+	 * An exploration step is to greedily select the best unvisited neighbouring
+	 * configuration/location. Then the agent updates its configuration/location
+	 * to the new one. This exploration step repeats until the current
+	 * configuration/location is the local best. This method records each
+	 * exploration step into a file.
+	 * 
+	 * @param implementingElements
+	 *            a set of element indices, which indicates the positions of the
+	 *            elements in the current iteration
+	 */
+	private void exhaustiveExploreNonAveraging(
+			HashSet<Integer> implementingElements) {
+		// create visited set
+		HashSet<Integer> visitedLocIds = new HashSet<Integer>();
+		// put agent's current location into the visited set
+		visitedLocIds.add(this.myCurrentAgent.getLocId());
+		// get current landscape
+		Landscape ldscp = this.myLandscapeTable[this.myCurrentShock][this.myCurrentAgent
+				.getImplementedElements().size()];
+		// get neighbour set of the agent's current location
+		HashSet<Integer> implementingNeighbours = ldscp.getNeighboursInclusive(
+				this.myCurrentAgent.getLocId(), implementingElements,
+				this.myCurrentAgent.getProcessingPower());
+		// from the neighbour set, remove all the visited locations, to end up
+		// with unvisited neighbour set
+		implementingNeighbours.removeAll(visitedLocIds);
+		// deal with constraint
+		int numToTry = (int) Math.ceil(this.myCurrentAgent.getConstraint()
+				* implementingNeighbours.size());
+		int numTried = 0;
+		boolean foundBetter = false;
+		do {
+			// if found better config before, then update the neighouring set
+			if (foundBetter) {
+				implementingNeighbours = ldscp.getNeighboursInclusive(
+						this.myCurrentAgent.getLocId(), implementingElements,
+						this.myCurrentAgent.getProcessingPower());
+				implementingNeighbours.removeAll(visitedLocIds);
+				numTried = 0;
+				OutputWriter.writeLine(this.constructOutputFileLine());
+				this.myCurrentTime++;
+			}
+			// reset foundBetter flag
+			foundBetter = false;
+			// loop to find best config among current neighbours
+			while (numTried < numToTry && !implementingNeighbours.isEmpty()) {
+				// pick one candidate randomly
+				int candidateNeighbour = -1;
+				int candidateIdx = RandomGen.randomGen
+						.nextInt(implementingNeighbours.size());
+				Iterator<Integer> itr = implementingNeighbours.iterator();
+				for (int i = 0; i <= candidateIdx; i++) {
+					candidateNeighbour = itr.next();
+				}
+				// put the candidate in to visited set and remove it from
+				// neighbouring set
+				visitedLocIds.add(candidateNeighbour);
+				implementingNeighbours.remove(candidateNeighbour);
+				numTried++;
+				// compare and pick the better one, but not update the
+				// neighbouring set
+				if (ldscp.getScoreOfLocId(candidateNeighbour) >= ldscp
+						.getScoreOfLocId(this.myCurrentAgent.getLocId())) {
+					this.myCurrentAgent.updateLocId(candidateNeighbour);
 					foundBetter = true;
 				}
 			}

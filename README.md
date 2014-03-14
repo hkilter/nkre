@@ -1,6 +1,8 @@
 ================================================
 UPDATE LOG: 
 ================================================
+- 4 Mar 2014 by Ziquan
+	Add node as switch for averaging score and non averaging score
 - 26 Feb 2014 by Ziquan
 	Add constraint, exploration strategy into output file name
 - 24 Feb 2014 by Ziquan

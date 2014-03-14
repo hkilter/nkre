@@ -20,6 +20,7 @@ public class Agent {
 	private HashSet<Integer> myUnimplementedElements;
 
 	private double myContraint;
+	private boolean myIsAveraging;
 	private boolean myIsExhaustive;
 
 	// private boolean myIsRefactoringAll;
@@ -45,13 +46,17 @@ public class Agent {
 	 * @param totalNum
 	 *            a non-negative integer, which represents the number of agents
 	 *            with the same type
-	 * @param isRefactoringAll
-	 *            a boolean value, which determines the scope in refactoring
-	 *            process
+	 * @param constraint
+	 *            a number in (0, 1], which represents the resource constraint
+	 * @param isAveraging
+	 *            a boolean, which indicates if the agent uses averaging scores
+	 * @param isExhaustive
+	 *            a boolean, which indicates if the agent uses exhaustive search
 	 */
 	public Agent(InfluenceMatrix inf,
 			ArrayList<HashSet<Integer>> iterationPlan, int processingPower,
-			String type, int totalNum, double constraint, boolean isExhaustive
+			String type, int totalNum, double constraint, boolean isAveraging,
+			boolean isExhaustive
 	/*
 	 * , boolean isRefactoringAll
 	 */) {
@@ -119,6 +124,7 @@ public class Agent {
 			this.myUnimplementedElements.add(i);
 		}
 		this.myContraint = constraint;
+		this.myIsAveraging = isAveraging;
 		this.myIsExhaustive = isExhaustive;
 		// this.myIsRefactoringAll = isRefactoringAll;
 	}
@@ -169,6 +175,15 @@ public class Agent {
 	}
 
 	/**
+	 * Return if the agent uses averaging score
+	 * 
+	 * @return if the agent uses averaging score
+	 */
+	public boolean isAveraging() {
+		return this.myIsAveraging;
+	}
+
+	/**
 	 * Return the agent's constraint
 	 * 
 	 * @return the agent's constraint
@@ -182,7 +197,7 @@ public class Agent {
 	 * 
 	 * @return if the agent uses exhaustive search
 	 */
-	public boolean IsExhaustive() {
+	public boolean isExhaustive() {
 		return this.myIsExhaustive;
 	}
 

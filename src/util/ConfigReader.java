@@ -165,6 +165,7 @@ public class ConfigReader {
 		// parse the rest children nodes
 		int num = -1;
 		int power = -1;
+		boolean isAveraging = false;
 		double constraint = -1;
 		boolean isExhaustive = false;
 		// boolean isRefactoringAll = false;
@@ -183,6 +184,9 @@ public class ConfigReader {
 					plan = constructPlan(attr.getTextContent().trim());
 				} else if (attr.getTagName().equals("constraint")) {
 					constraint = new Double(attr.getTextContent().trim());
+				} else if (attr.getTagName().equals("averaging")) {
+					isAveraging = attr.getTextContent().trim()
+							.equalsIgnoreCase("true");
 				} else if (attr.getTagName().equals("exhaustive")) {
 					isExhaustive = attr.getTextContent().trim()
 							.equalsIgnoreCase("true");
@@ -198,9 +202,9 @@ public class ConfigReader {
 			}
 		}
 		return new Agent(inf, plan, power, agentType, num, constraint,
-				isExhaustive/*
-							 * , isRefactoringAll
-							 */);
+				isAveraging, isExhaustive/*
+										 * , isRefactoringAll
+										 */);
 	}
 
 	/**
